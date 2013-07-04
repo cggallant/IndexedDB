@@ -57,42 +57,27 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="IDBExplorer\close.png" />
-    <Content Include="IDBExplorer\d.gif" />
-    <Content Include="IDBExplorer\d.png" />
-    <Content Include="IDBExplorer\database.png" />
-    <Content Include="IDBExplorer\database5.png" />
-    <Content Include="IDBExplorer\funnel.png" />
-    <Content Include="IDBExplorer\funnel2.png" />
-    <Content Include="IDBExplorer\funnel5.png" />
-    <Content Include="IDBExplorer\IDBExplorer.css" />
-    <Content Include="IDBExplorer\IDBExplorer.html" />
-    <Content Include="IDBExplorer\IDBExplorer.js" />
-    <Content Include="IDBExplorer\index.png" />
-    <Content Include="IDBExplorer\jquery-1.6.4.min.js" />
-    <Content Include="IDBExplorer\jquery.jstree.js" />
-    <Content Include="IDBExplorer\objectstore.png" />
-    <Content Include="IDBExplorer\refresh.png" />
-    <Content Include="IDBExplorer\style.css" />
-    <Content Include="IDBExplorer\table5.png" />
-    <Content Include="IDBExplorer\table6.png" />
-    <Content Include="IDBExplorer\throbber.gif" />
+    <Content Include="css\groceries.css" />
+    <Content Include="groceries.aspx" />
+    <Content Include="js\groceries.db.js" />
+    <Content Include="js\groceries.ui.items.js" />
+    <Content Include="js\groceries.ui.js" />
+    <Content Include="js\groceries.ui.lists.js" />
     <Content Include="js\jquery-1.9.0.js" />
-    <Content Include="js\TestPage.js" />
-    <Content Include="TestPage.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestPage.aspx.cs">
-      <DependentUpon>TestPage.aspx</DependentUpon>
+    <Compile Include="groceries.aspx.cs">
+      <DependentUpon>groceries.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="TestPage.aspx.designer.cs">
-      <DependentUpon>TestPage.aspx</DependentUpon>
+    <Compile Include="groceries.aspx.designer.cs">
+      <DependentUpon>groceries.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="js\groceries.ui.categories.js" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

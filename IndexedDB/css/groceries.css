@@ -1,0 +1,51 @@
+﻿
+body {
+    background-color:#e0e0e0;
+}
+
+.divTitle {
+    font-weight: bold;
+    padding-top:20px;
+}
+.spanSubTitle { font-weight:bold; }
+
+.divList {
+    display:inline-block;
+    width:200px;
+}
+    .divList > SELECT, .divListItems > SELECT {
+        width:100%;
+    }
+
+.divForm {
+    margin-left:8px;
+    display:inline-block;
+}
+
+
+.divSelectedShoppingListContents {
+    border:1px solid;
+    border-color:ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
+    padding:10px 10px 10px 20px;
+    background-color:white;
+}
+    .divSelectedShoppingListContents .divListItems {
+        display:inline-block;
+        width: 200px;
+        vertical-align:top;
+    }
+
+    .divSelectedShoppingListContents .divListItemForm {
+        margin-left: 8px;
+        display:inline-block;
+        width:250px;
+    }
+
+#txtShoppingListItemCategory,#txtShoppingListItemPrice {
+    background-color: lightgray;
+}
+
+INPUT[TYPE=BUTTON] {
+    width:90px;
+    margin:10px 0 10px 0;
+}

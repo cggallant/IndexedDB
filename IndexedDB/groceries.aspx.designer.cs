@@ -11,7 +11,7 @@ namespace IndexedDB
 {
 
 
-    public partial class TestPage
+    public partial class groceries
     {
 
         /// <summary>
