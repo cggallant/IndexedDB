@@ -11,6 +11,13 @@ var DB_OBJSTORE_CATEGORIES = "Categories";
 // fncError - passed the error object if there is an error
 // fncSuccess - optional - no parameters are passed to this function. Simply provided so that the caller can be informed that the database is ready
 function openDB(fncError, fncSuccess) {
+    // If IndexedDB is not supported then...
+    if (!window.indexedDB) {
+        // Tell the caller of the issue and then exit
+        fncError({ "name": "IndexedDB is not supported by this browser" });
+        return;
+    } // End if (!window.indexedDB)
+
 
     // Request that our database be opened (indexedDB is an IDBFactory object. Our database will be created if it doesn't exist yet)
     var dbRequest = window.indexedDB.open(DB_NAME, DB_VERSION);

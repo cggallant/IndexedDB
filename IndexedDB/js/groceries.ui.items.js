@@ -51,15 +51,19 @@ function itemsItemSaved(objRecord) {
 
 // Delete
 function onClickDeleteItem() {
-
-    //fix_me...deleting an item will need to delete the item from all the shopping lists too
-
     // Ask for the selected category to be deleted and then clear the text field (the list item will be removed if the database record delete is successful)
     deleteRecord(DB_OBJSTORE_ITEMS, parseInt(getjQueryReference("txtItem").attr("data-itemid"), 10), onError, onItemsItemDeleted);
     resetItemsFields();
 }
 // Remove the list item 
-function onItemsItemDeleted(iItemID) { getjQueryReference("lstItems").find(("option[value=" + iItemID.toString() + "]")).remove(); }
+function onItemsItemDeleted(iItemID) { 
+    // Remove the Item from our list here and clear any shopping list that might be displayed
+    getjQueryReference("lstItems").find(("option[value=" + iItemID.toString() + "]")).remove(); 
+    resetShoppingListFields(true);
+
+    // Ask the List's form to step through each list in the database and remove the current item from it if it exists there
+    listsRemoveItemInDB(iItemID);
+}
 
 
 
@@ -69,4 +73,17 @@ function resetItemsFields() {
     // Clear the selection and the price textbox
     getjQueryReference("ddlItemCategories").val("");
     getjQueryReference("txtPrice").val("");
+}
+
+
+// Called when a category is deleted so that we can step through the items db records and change the category to 0
+function itemsChangeItemCategoryInDB(iOriginalCategoryID, iNewCategoryID) {
+    // Ask for the list of items in the Items object store.
+    getItems(DB_OBJSTORE_ITEMS, function (objItem) { itemsSaveItemWithNewCategoryID(objItem, iOriginalCategoryID, iNewCategoryID) }, onError, function () { /* reached the end of the Items object store */ });
+}
+function itemsSaveItemWithNewCategoryID(objItem, iOriginalCategoryID, iNewCategoryID) {
+    // If the current item holds an expense category id that we need to change then...
+    if (objItem.categoryID === iOriginalCategoryID) {
+        saveRecord(DB_OBJSTORE_ITEMS, buildItemsDBObject(objItem.id, objItem.name, iNewCategoryID, objItem.price), onError, function (objRecord) { /* successful save */ });
+    } // End  if (objItem.categoryID === iOriginalCategoryID)
 }

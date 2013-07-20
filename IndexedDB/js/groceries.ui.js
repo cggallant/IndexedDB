@@ -4,7 +4,7 @@ var g_arrJQueryReferences = [];// Array that holds cached jQuery references
 
 $(document).ready(function () {
 
-    // Open the database
+    // Open the database. Controls will only be enabled if the database was successfully opened when the onDatabaseOpened gets called.
     openDB(onError, onDatabaseOpened);
 
 });
@@ -32,8 +32,19 @@ function enableControls(arrCtrlIDs, bEnable) {
 // An error was returned by our database code
 function onError(objError) { displayMessage(objError.name, true); }
 
-//fix_me...adjust the class of the div to reflect if this is an error or information message
-function displayMessage(sMessage, bError) { getjQueryReference("divAppMessages").text(sMessage); }
+// A helper function to display the error message and make sure the proper class is set on the div based on if the message is an error or information
+function displayMessage(sMessage, bError) {
+    var $divMessage = getjQueryReference("divAppMessages");
+    $divMessage.text(sMessage);
+
+    // Set the class so that the div is formatted correctly based on if this is an error message or just an information message
+    var sClassNeeded = (bError ? "divAppMessagesError" : "divAppMessagesInfo");
+    if (!$divMessage.hasClass(sClassNeeded)) {
+        $divMessage.removeClass((bError ? "divAppMessagesInfo" : "divAppMessagesError")); // Since the class that is set is the opposite of the one we need, remove that opposite class
+        $divMessage.addClass(sClassNeeded);
+    } // End if (!$divMessage.hasClass(sClassNeeded))
+}
+
 
 // Used by Items and Categories
 function resetNameTextbox(sCtrlID) {
@@ -44,6 +55,13 @@ function resetNameTextbox(sCtrlID) {
 
 
 function onDatabaseOpened() {
+    //-----------------------
+    // Wire up the buttons that let us switch displayed sections
+    getjQueryReference("cmdShowLists").click(function () { showSection("divSection_List"); });
+    getjQueryReference("cmdShowItems").click(function () { showSection("divSection_Items"); });
+    getjQueryReference("cmdShowCategories").click(function () { showSection("divSection_Categories"); });
+
+
     //-----------------------
     // Wire up the lists
     getjQueryReference("lstLists").click(function () { onClickListItem($(this)); });
@@ -97,6 +115,36 @@ function onDatabaseOpened() {
     getjQueryReference("cmdDeleteCategory").click(function () { onClickDeleteCategory(); });
     getjQueryReference("cmdCreateCategory").click(function () { resetNameTextbox("txtCategory"); });
     getjQueryReference("cmdSaveCategory").click(function () { onClickSaveCategory(); });
+}
+
+
+// User clicked on a button to show one of the sections
+function showSection(sSectionID) {
+    var $divList = getjQueryReference("divSection_List");
+    var $divItems = getjQueryReference("divSection_Items");
+    var $divCategories = getjQueryReference("divSection_Categories");
+
+    // Hide any section that's currently visible
+    if ($divList.hasClass("SectionVisible")) { $divList.removeClass("SectionVisible"); $divList.addClass("SectionHidden"); }
+    if ($divItems.hasClass("SectionVisible")) { $divItems.removeClass("SectionVisible"); $divItems.addClass("SectionHidden"); }
+    if ($divCategories.hasClass("SectionVisible")) { $divCategories.removeClass("SectionVisible"); $divCategories.addClass("SectionHidden"); }
+
+    // Show the section requested and set the title section with the proper text
+    if (sSectionID === "divSection_List") {
+        $divList.removeClass("SectionHidden");
+        $divList.addClass("SectionVisible");
+        getjQueryReference("divSectionTitle").text("Lists...");
+    }
+    else if (sSectionID === "divSection_Items") {
+        $divItems.removeClass("SectionHidden");
+        $divItems.addClass("SectionVisible");
+        getjQueryReference("divSectionTitle").text("Items...");
+    }
+    else {
+        $divCategories.removeClass("SectionHidden");
+        $divCategories.addClass("SectionVisible");
+        getjQueryReference("divSectionTitle").text("Categories...");
+    }
 }
 
 

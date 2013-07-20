@@ -236,7 +236,7 @@ function resetShoppingListFields(bClearShoppingListItems) {
 
     // Clear the field selections
     var $ddlShoppingListItem = getjQueryReference("ddlShoppingListItem");
-    $ddlShoppingListItem.val("");
+    $ddlShoppingListItem.val("0");
     $ddlShoppingListItem.prop("disabled", true);
     getjQueryReference("txtShoppingListItemPrice").val("");
     getjQueryReference("txtShoppingListItemQuantity").val("");
@@ -260,13 +260,24 @@ function onClickShoppingListItemDropDown($objListItem) {
 
 function onClickSaveShoppingListItem() {
     var $lstShoppingList = getjQueryReference("lstShoppingListItems");
+
+    // Make sure we have an item selected (the '[None]' item doesn't count as a selection)
     var $objSelItem = getjQueryReference("ddlShoppingListItem").find("option:selected");
+    if ($objSelItem.length === 0) { displayMessage("An item must be selected before it can be added to the shopping list", true); return; }
 
     var iItemID = parseInt($objSelItem.val(), 10);
-    var fPrice = parseFloat(getjQueryReference("txtShoppingListItemPrice").val());
-    var iQuantity = parseInt(getjQueryReference("txtShoppingListItemQuantity").val(), 10);
-    var bInCart = getjQueryReference("chkShoppingListItemInCart").prop("checked");
+    if (iItemID === 0) { displayMessage("An item must be selected before it can be added to the shopping list", true); return; }// 
 
+
+    // Verify that a value has been entered and that it's at least 0 (can't have a negative quantity in your cart)
+    var sQuantity = getjQueryReference("txtShoppingListItemQuantity").val();
+    if (sQuantity === "") { sQuantity = "0"; }
+    var iQuantity = parseInt(sQuantity, 10);
+    if (isNaN(iQuantity) || (iQuantity < 0)) { displayMessage("A quantity of 0 or more must be specified", true); return; }
+
+
+    var bInCart = getjQueryReference("chkShoppingListItemInCart").prop("checked");
+    var fPrice = parseFloat(getjQueryReference("txtShoppingListItemPrice").val());
     var fItemTotal = (fPrice * iQuantity);
     var sCaption = buildShoppingListItemCaption($objSelItem.text(), iQuantity.toString(), fItemTotal, bInCart);
 
@@ -300,4 +311,27 @@ function onClickSaveShoppingListItem() {
     
     // Cause the total to be recalculated and updated
     updateListTotal(true);
+}
+
+
+// Called by the Items form when an item is deleted so that we can step through each list in the database and remove the item if it exists there
+function listsRemoveItemInDB(iItemID) {
+    getItems(DB_OBJSTORE_LISTS, function (objItem) { listsSaveWithItemRemoved(objItem, iItemID) }, onError, function () { /* reached the end of the Lists object store */ });
+}
+function listsSaveWithItemRemoved(objItem, iItemID) {
+    var aItem = null;
+
+    // Grab a local array from the item's list and loop through the list to see if the item that has been deleted is in it...
+    var arrShoppingListItems = objItem.items;
+    var iLen = arrShoppingListItems.length;
+    for (var iIndex = 0; iIndex < iLen; iIndex++) {
+        // Grab the current array item and if it has the item ID that we're checking for then...
+        aItem = arrShoppingListItems[iIndex];
+        if (aItem.itemID === iItemID) {
+            // Remove the current item from our array and then save the shopping list now that it no longer has the item
+            arrShoppingListItems.splice(iIndex, 1); 
+            saveRecord(DB_OBJSTORE_LISTS, buildListsDBObject(objItem.id, objItem.name, arrShoppingListItems), onError, function (objRecord) { /* successful save */ });
+            break;// We only allow for the item to be added the once in the list so, since we've found the item, we're done
+        } // End if (aItem.itemID === iItemID)
+    } // End of the for (var iIndex = 0; iIndex < iLen; iIndex++) loop.
 }

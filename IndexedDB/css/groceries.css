@@ -3,6 +3,31 @@ body {
     background-color:#e0e0e0;
 }
 
+.spanAppInfo { 
+    font-style:italic;
+}
+
+.divAppMessagesInfo,.divAppMessagesError {
+    margin-top: 10px;
+    padding:4px;
+    border:2px solid;
+}
+.divAppMessagesInfo { 
+    border-color:blue; 
+}
+.divAppMessagesError {
+    border-color: red;
+}
+
+
+.SectionVisible {
+    display:block;
+}
+.SectionHidden {
+    display: none;
+}
+
+
 .divTitle {
     font-weight: bold;
     padding-top:20px;

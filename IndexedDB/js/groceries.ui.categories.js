@@ -42,8 +42,12 @@ function onClickDeleteCategory() {
 }
 // Remove the list item 
 function onCategoryItemDeleted(iItemID) {
-	// Remove the category from our list here and from the drop-down on the Items form
+	// Remove the category from our list here and make sure the Items form is cleared just in case something was selected that had this category
 	var sID = iItemID.toString();
 	getjQueryReference("lstCategories").find(("option[value=" + sID + "]")).remove();
 	getjQueryReference("ddlItemCategories").find(("option[value=" + sID + "]")).remove();
+	resetItemsFields();
+
+    // Ask the Item's form to step through each database record and change the current category id to 0 if it's set to this category
+	itemsChangeItemCategoryInDB(iItemID, 0);	
 }
